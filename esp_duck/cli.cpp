@@ -102,55 +102,13 @@ namespace cli {
         cli.addSingleArgCmd("sendkeys", [](cmd* c) {
             Command  cmd { c };
             Argument arg { cmd.getArg(0) };
-            String enter = "ENTER\n\0";
             String keys = "STRING "+arg.getValue()+"\nENTER\n\0";
             unsigned int bufsize = keys.length()+1;
-            unsigned int entersize = enter.length()+1;
             char buf[bufsize];
-            char enterbuf[entersize];
             keys.toCharArray(buf,bufsize);
-            enter.toCharArray(enterbuf,entersize);
             com::send(buf, bufsize);
-            //com::send(enterbuf, entersize);
             print(String(buf));
-
-        /*while (f.available() && !eol && buf_i < BUFFER_SIZE) {
-            uint8_t b = f.peek();
-
-            //utf8
-            if((b & 0x80) == 0x80) {
-                uint8_t extra_chars = 0;
-            
-                if((b & 0xC0) == 0xC0) {
-                    extra_chars = 2;
-                } else if((b & 0xE0) == 0xC0) {
-                    extra_chars = 3;
-                } else if((b & 0xF0) == 0xC0) {
-                    extra_chars = 4;
-                }
-
-                // utf8 char doesn't fit into buffer
-                if ((buf_i + extra_chars) > BUFFER_SIZE) break;
-            }
-            
-            eol        = (b == '\n');
-            buf[buf_i] = f.read();
-            ++buf_i;
-            // debug(char(b));
-        }
-
-        if (!eol) debugln();
-
-        if (strncmp((char*)buf, "REPEAT", _min(buf_i, 6)) != 0) {
-            if (prevMessage) free(prevMessage);
-            prevMessageLen = buf_i;
-            prevMessage    = (char*)malloc(prevMessageLen + 1);
-            memcpy(prevMessage, buf, buf_i);
-            prevMessage[buf_i] = '\0';
-        }
-
-        com::send(buf, buf_i);*/
-                    
+                   
         });
 
          /**
