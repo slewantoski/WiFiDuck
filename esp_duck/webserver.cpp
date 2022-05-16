@@ -80,12 +80,22 @@ namespace webserver {
     // ===== PUBLIC ===== //
     void begin() {
         // Access Point
-        WiFi.hostname(HOSTNAME);
+        //WiFi.hostname(HOSTNAME);
 
         // WiFi.mode(WIFI_AP_STA);
-        WiFi.softAP(settings::getSSID(), settings::getPassword(), settings::getChannelNum());
-        WiFi.softAPConfig(apIP, apIP, IPAddress(255, 255, 255, 0));
-        debugf("Started Access Point \"%s\":\"%s\"\n", settings::getSSID(), settings::getPassword());
+        //WiFi.softAP(settings::getSSID(), settings::getPassword(), settings::getChannelNum());
+        //WiFi.softAPConfig(apIP, apIP, IPAddress(255, 255, 255, 0));
+        //debugf("Started Access Point \"%s\":\"%s\"\n", settings::getSSID(), settings::getPassword());
+
+        debugf("Connecting to AP \"%s\":\"%s\"\n", settings::getSSID(), settings::getPassword());
+        WiFi.begin(settings::getSSID(), settings::getPassword());
+        
+          while (WiFi.status() != WL_CONNECTED)
+            {
+              delay(500);
+              debugf(".");
+            }
+            debugln(WiFi.localIP());
 
         // Webserver
         server.on("/", HTTP_GET, [](AsyncWebServerRequest* request) {
@@ -172,7 +182,8 @@ namespace webserver {
 
         dnsServer.setTTL(300);
         dnsServer.setErrorReplyCode(DNSReplyCode::ServerFailure);
-        dnsServer.start(53, URL, apIP);
+        //dnsServer.start(53, URL, apIP);
+		dnsServer.start(53, URL, WiFi.localIP());
 
         MDNS.addService("http", "tcp", 80);
 
